@@ -9,8 +9,9 @@ class Converter(object):
     """
     Base class for bank transactions processing
     """
+
     def __init__(self):
-        with open('public_payees.yml', 'r') as yfile:
+        with open('public_payees.yml', 'r', encoding='UTF-8') as yfile:
             self.payees = yaml.load(yfile)
         with open('private_payees.yml', 'r') as yfile:
             self.payees.update(yaml.load(yfile))
