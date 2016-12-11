@@ -2,7 +2,12 @@
 # coding: utf-8
 
 import csv
+import logging
+
 import yaml
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class Converter(object):
@@ -13,8 +18,15 @@ class Converter(object):
     def __init__(self):
         with open('public_payees.yml', 'r', encoding='UTF-8') as yfile:
             self.payees = yaml.load(yfile)
-        with open('private_payees.yml', 'r') as yfile:
-            self.payees.update(yaml.load(yfile))
+        try:
+            with open('private_payees.yml', 'r', encoding='UTF-8') as yfile:
+                yaml_loaded = yaml.load(yfile)
+                if yaml_loaded is None:
+                    logger.info('private_payees.yml is empty')
+                else:
+                    self.payees.update(yaml_loaded)
+        except IOError:
+            logger.info('Could not open private_payees.yml')
 
     def find_payee(self, *sources):
         """exctract matching payee name from lise of sources"""
