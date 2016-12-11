@@ -11,6 +11,7 @@ import yaml
 import logging
 import requests
 import time
+import re
 from decimal import Decimal
 
 from converter import Converter
@@ -39,9 +40,9 @@ class Number26(Converter):
         session = requests.Session()
         session.headers.update({
             'Accept': 'application/json, text/javascript, */*; q=0.01',
-            'accept-language': 'en-US,en;q=0.8',
-            'accept-encoding': 'gzip, deflate',
-            'content-type': 'application/x-www-form-urlencoded',
+            'Accept-Language': 'en-US,en;q=0.8',
+            'Accept-Encoding': 'gzip, deflate',
+            'Content-Type': 'application/x-www-form-urlencoded',
             'Origin': 'https://my.number26.de',
             'Referer': 'https://my.number26.de/',
             'Authorization': 'Basic bXktdHJ1c3RlZC13ZHBDbGllbnQ6c2VjcmV0',
@@ -60,7 +61,7 @@ class Number26(Converter):
         session.headers.update({
             'Authorization': 'bearer %s' % resp['access_token']
         })
-        del session.headers['content-type']
+        del session.headers['Content-Type']
         page = session.get('https://api.tech26.de/api/smrt/transactions',
                            params={'limit': 50})
         if page.status_code != 200:
@@ -72,14 +73,16 @@ class Number26(Converter):
     def convert_row(self, row):
         _timestamp = row['visibleTS'] / 1000
         _raw_payee = row.get('merchantName') or row.get('partnerName', '')
-        _comment = row.get('referenceText', '')
+        _raw_payee = _raw_payee.strip()
+        _comment = row.get('referenceText', '').strip()
         _raw_amount = row['amount']
-        _category = row.get('category', '').replace('micro-', '')
-        _city = row.get('merchantCity', '')
+        _category = row.get('category', '').replace('micro-', '').strip()
+        _city = row.get('merchantCity', '').strip()
         date = time.strftime('%m/%d/%y', time.gmtime(_timestamp))
         payee = self.find_payee(_raw_payee, _comment, _category)
         amount = Decimal(str(_raw_amount))
         memo = "%s %s %s" % (_raw_payee, _comment, _city)
+        memo = re.sub('\s+', ' ', memo).strip()
         category = ""   # let client software determine category based on payee
         ynab = {
             'Date': date,
