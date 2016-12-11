@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 class Number26(Converter):
     """
-    Implementation for Number25 bank
+    Implementation for Number26 bank
     """
     def __init__(self, *args, **kwargs):
         super(Number26, self).__init__(*args, **kwargs)
