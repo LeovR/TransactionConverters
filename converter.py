@@ -32,14 +32,13 @@ class Converter(object):
         """exctract matching payee name from lise of sources"""
         for match, payee in self.payees.items():
             # first check startswith
-            if [source for source in sources
-                    if source.lower().startswith(match.lower())]:
+            if [source for source in sources if source.lower().startswith(match.lower())]:
                 return payee
         for match, payee in self.payees.items():
             # then check contains
-            if [source for source in sources
-                    if match.lower() in source.lower()]:
+            if [source for source in sources if match.lower() in source.lower()]:
                 return payee
+        return next((source for source in sources if source), sources[0])
 
     def export_file(self, filename, data):
         with open(filename, 'w', encoding='UTF-8') as csvfile:
