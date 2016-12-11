@@ -4,3 +4,4 @@ __pycache__
 .ropeproject
 umsatz-*
 ynab_data_*
+.idea
