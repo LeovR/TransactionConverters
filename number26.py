@@ -96,7 +96,7 @@ class Number26(Converter):
 
 
 if __name__ == '__main__':
-    ynab_file = "ynab_import_n26.csv"
+    ynab_file = "export/ynab_import_n26.csv"
     converter = Number26()
     input_data = converter.load_transactions()
     ynab_data = []

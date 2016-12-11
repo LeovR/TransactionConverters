@@ -5,3 +5,5 @@ __pycache__
 umsatz-*
 ynab_data_*
 .idea
+export/*
+!export/.gitkeep
