@@ -30,7 +30,7 @@ class Converter(object):
                 return payee
 
     def export_file(self, filename, data):
-        with open(filename, 'w') as csvfile:
+        with open(filename, 'w', encoding='UTF-8') as csvfile:
             fieldnames = ['Date', 'Payee', 'Category', 'Memo', 'Outflow',
                           'Inflow']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
